@@ -1,0 +1,45 @@
+#include <WiFi.h>
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.mode(WIFI_STA); // Set Wi-Fi to Station mode
+  WiFi.disconnect();
+  delay(100);
+}
+
+void loop() {
+  Serial.println("checking for potential's...");
+
+  // Start Wi-Fi scan
+  int n = WiFi.scanNetworks();
+  Serial.println("Checking complete");
+
+  if (n == 0) {
+    Serial.println("Nothing strong enough");
+  } else {
+    Serial.print(n);
+    Serial.println(" Potential targets found");
+
+    for (int i = 0; i < n; ++i) {
+      // Print SSID and RSSI for each network found
+      Serial.print(i + 1);
+      Serial.print(": ");
+      Serial.print(WiFi.SSID(i));
+      Serial.print(" (RSSI: ");
+      Serial.print(WiFi.RSSI(i));
+      Serial.println(" dBm)");
+
+      // Check if RSSI is higher than -50 dBm
+      if (WiFi.RSSI(i) > -50) {
+        Serial.print("Strong enough signal detected, potentially: ");
+        Serial.print(WiFi.SSID(i));
+        Serial.print(" with RSSI: ");
+        Serial.print(WiFi.RSSI(i));
+        Serial.println(" dBm");
+      }
+    }
+  }
+
+  // time before scanning again
+  delay(15000);
+}
